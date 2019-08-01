@@ -18,10 +18,31 @@ export function remove(id) {
     payload: id
   })
 }
-export function complete(id) {
+export function complete(task) {
   store.dispatch({
     type: 'COMPLETE_TASK',
-    payload: id
+    payload: {
+      id: task.id,
+      completed: false
+    }
+  })
+}
+export function modifyTask(task) {
+  store.dispatch({
+    type: 'MODIFY_TASK',
+    payload: {
+      id: task.id,
+      value: task.value,
+      completed: task.completed
+    }
+  })
+}
+
+
+export function setFilter(filter) {
+  store.dispatch({
+    type: 'FILTER_CHANGE',
+    payload: filter
   })
 }
 

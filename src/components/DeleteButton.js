@@ -5,9 +5,13 @@ import { useState } from 'react'
 
 export default function DeleteButton(props) {
     const [task, setTask] = useState('')
+    const [count, setCount] = useState(props.count)
     function removeTask (e) {
         e.preventDefault()
         remove(props.id)
+        setCount(props.count - 1)
+        console.log(props.count)
+
       }
     
     return (

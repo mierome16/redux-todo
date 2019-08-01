@@ -1,26 +1,39 @@
 import React from 'react'
-import { add, remove, complete } from '../actions/todo.actions'
+import { add, remove, complete, setFilter } from '../actions/todo.actions'
 import Tasks from './Tasks'
 import { useState } from 'react'
 import '../styles/todolist.css'
 import MaterialIcon, {colorPalette} from 'material-icons-react';
+import { useSelector } from 'react-redux'
 
 
 export default props => {
+  const allTasks = useSelector(appState => appState.tasks.length)
+  const filter = useSelector(appState => appState.filter)
+  const count = useSelector(appState => appState.tasks.filter(task => !task.complete).length)
   const [task, setTask] = useState('')
-  const [count, setCount] = useState('')
+
+  const tasks = useSelector(appState => {
+    const filter = appState.filter
+    
+    switch (filter) {
+      case 'active':
+        return appState.tasks.filter(task => !task.checked)
+      case 'completed':
+        return appState.tasks.filter(task => task.checked)
+      default:
+        return appState.tasks
+    }
+  })
+
 
   function addTask(e) {
     e.preventDefault()
     add(task)
     setTask('')
-    setCount(Number(count) + 1)
   }
 
-  function handleSubmit(e) {
-   
-    setTask(task)
-  }
+
 
   return (
     <div className="tdpage">
@@ -34,11 +47,19 @@ export default props => {
       <button className="submitbutton"><MaterialIcon icon="add_circle_outline" id="add"/></button>
       </div>
       <ul className="tasklist">
-        <Tasks></Tasks>
+        <Tasks id={task.id} value={task.value} completed={task.completed}></Tasks>
       </ul>
+      {allTasks > 0 ? (
       <footer>
-        Tasks Remaining: {count}
+        <p>Tasks Remaining: {count}</p>
+        <div>
+          <button className={filter === 'all' ? 'active' : ''} onClick={e => setFilter('all')} type="button">All</button>
+          <button className={filter === 'active' ? 'active' : ''} onClick={e => setFilter('active')} type="button">Active</button>
+          <button className={filter === 'completed' ? 'active' : ''} onClick={e => setFilter('active')} type="button">Completed</button>
+        </div>
+        <button >Clear All</button>
       </footer>
+      ) : ''}
       </form>
     </div>
   )
